@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using Animerch.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Animerch.Models
 {
@@ -16,6 +17,6 @@ namespace Animerch.Models
 
         public List<User> Users{ get; set; }
 
-        public List<Merchandise> Merchandise { get; set; }
+        public ICollection<MerchVsUser> Merchandise { get; set; }
     }
 }
