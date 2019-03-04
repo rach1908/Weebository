@@ -8,11 +8,16 @@ namespace Animerch.Models
 {
     public class Merchandise
     {
+        public int ID { get; set; }
+
         public string Name { get; set; }
 
         public string Type { get; set; }
 
-        [DataType(DataType.Currency)]
-        public decimal Price { get; set; }
+        public string Series { get; set; }
+        
+        public string Manufacturer { get; set; }
+
+        public List<Transaction> Transactions { get; set; }
     }
 }
