@@ -10,8 +10,8 @@ using Animerch.Data;
 namespace Animerch.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190304130042_user")]
-    partial class user
+    [Migration("20190306133655_ChangedUser")]
+    partial class ChangedUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -73,7 +73,7 @@ namespace Animerch.Migrations
 
                     b.HasIndex("TransactionID");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Animerch.Models.MerchVsUser", b =>
@@ -152,44 +152,6 @@ namespace Animerch.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>

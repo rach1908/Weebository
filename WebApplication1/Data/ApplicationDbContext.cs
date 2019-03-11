@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Animerch.Data;
+using Animerch.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication1.Data
+namespace Animerch.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
@@ -18,7 +19,11 @@ namespace WebApplication1.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<IdentityUser>().ToTable("User");
+            builder.Entity<User>().ToTable("User");
         }
+
+        public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<Merchandise> Merchandise { get; set; }
     }
 }

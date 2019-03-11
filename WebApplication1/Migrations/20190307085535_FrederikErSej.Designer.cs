@@ -10,8 +10,8 @@ using Animerch.Data;
 namespace Animerch.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190304130042_user")]
-    partial class user
+    [Migration("20190307085535_FrederikErSej")]
+    partial class FrederikErSej
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,8 +54,6 @@ namespace Animerch.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<int?>("TransactionID");
-
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -71,30 +69,26 @@ namespace Animerch.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("TransactionID");
-
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Animerch.Models.MerchVsUser", b =>
+            modelBuilder.Entity("Animerch.Models.Merchandise", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Amount");
+                    b.Property<string>("Manufacturer");
 
-                    b.Property<int?>("TransactionID");
+                    b.Property<string>("Name");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("Series");
+
+                    b.Property<string>("Type");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("TransactionID");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MerchVsUser");
+                    b.ToTable("Merchandise");
                 });
 
             modelBuilder.Entity("Animerch.Models.Transaction", b =>
@@ -103,9 +97,17 @@ namespace Animerch.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("MerchandiseID");
+
                     b.Property<decimal>("Price");
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("MerchandiseID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Transaction");
                 });
@@ -152,44 +154,6 @@ namespace Animerch.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -262,18 +226,11 @@ namespace Animerch.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Animerch.Data.User", b =>
+            modelBuilder.Entity("Animerch.Models.Transaction", b =>
                 {
-                    b.HasOne("Animerch.Models.Transaction")
-                        .WithMany("Users")
-                        .HasForeignKey("TransactionID");
-                });
-
-            modelBuilder.Entity("Animerch.Models.MerchVsUser", b =>
-                {
-                    b.HasOne("Animerch.Models.Transaction", "Transaction")
-                        .WithMany("Merchandise")
-                        .HasForeignKey("TransactionID");
+                    b.HasOne("Animerch.Models.Merchandise", "Merchandise")
+                        .WithMany("Transactions")
+                        .HasForeignKey("MerchandiseID");
 
                     b.HasOne("Animerch.Data.User", "User")
                         .WithMany("Transactions")

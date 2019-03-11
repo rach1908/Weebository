@@ -10,6 +10,6 @@ namespace Animerch.Data
 {
     public class User : IdentityUser
     {
-        public ICollection<MerchVsUser> Transactions { get; set; }
+        public List<Transaction> Transactions { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WebApplication1.Data;
+using Animerch.Data;
 
 [assembly: HostingStartup(typeof(Animerch.Areas.Identity.IdentityHostingStartup))]
 namespace Animerch.Areas.Identity
