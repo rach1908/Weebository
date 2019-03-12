@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using Animerch.Data;
+
+@model Animerch.Models.Transaction
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "View";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <h2>View</h2>
+    
+    <h4>Transaction</h4>
+    <hr/>
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="View">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label">Amount</label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{    
+    <br/>
+    <p class="alert alert-danger" role="alert">You must be logged in to see this page</p>
+}
+
