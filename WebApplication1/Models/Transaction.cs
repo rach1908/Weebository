@@ -7,14 +7,15 @@ using Animerch.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Animerch.Models
-{
-    //LOOK AT MerchVsUser
+{    
     public class Transaction
     {
         public int ID { get; set; }
 
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
+
+        public int Amount { get; set; }
 
         public User User{ get; set; }
 

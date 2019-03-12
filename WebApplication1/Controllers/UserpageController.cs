@@ -39,6 +39,20 @@ namespace Animerch.Controllers
             return View(derpette);
         }
 
+        public IActionResult MerchandiseAdd()
+        {
+            var derp = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var derpette = context.Merchandise.ToList();
+
+            return View(derpette);
+        }
+
+        public IActionResult MerchandiseAddEntry()
+        {
+            return View();
+        }
+
         public IActionResult Friends()
         {
             return View();

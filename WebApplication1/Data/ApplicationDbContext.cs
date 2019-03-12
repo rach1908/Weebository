@@ -20,6 +20,7 @@ namespace Animerch.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("User");
+            builder.Entity<Transaction>().Property(t => t.Amount).HasDefaultValue(1);
         }
 
         public DbSet<Transaction> Transaction { get; set; }
