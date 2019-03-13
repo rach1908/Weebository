@@ -12,9 +12,6 @@
 
 <h2>MerchandiseAdd</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -50,7 +47,7 @@
                     @Html.DisplayFor(modelItem => item.Manufacturer)
                 </td>
                 <td>
-                    <a asp-controller="Userpage" asp-action="MerchandiseAddEntry" >Add to your merchandise</a>
+                    <a asp-controller="Userpage" asp-action="MerchandiseAddEntry">Add to your merchandise</a>
                 </td>
             </tr>
         }

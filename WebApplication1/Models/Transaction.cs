@@ -13,12 +13,16 @@ namespace Animerch.Models
         public int ID { get; set; }
 
         [DataType(DataType.Currency)]
+        [Required]
         public decimal Price { get; set; }
 
+        [Required]
         public int Amount { get; set; }
 
+        [Required]
         public User User{ get; set; }
 
+        [Required]
         public Merchandise Merchandise { get; set; }
     }
 }
