@@ -7,10 +7,10 @@
 @inject UserManager<User> UserManager
 
 @{
-    ViewData["Title"] = "MerchandiseAdd";
+    ViewData["Title"] = "Merchandise";
 }
 
-<h2>MerchandiseAdd</h2>
+<h2>Merchandise</h2>
 
 <table class="table">
     <thead>
@@ -46,9 +46,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Manufacturer)
                 </td>
-                <td>
-                    <a asp-controller="Userpage" asp-action="MerchandiseAddEntry">Add to your merchandise</a>
-                </td>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <td>
+                        <a asp-controller="Userpage" asp-action="MerchandiseAddEntry">Add to your merchandise</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>
