@@ -8,6 +8,7 @@ using Animerch.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
+using Animerch.Models.Viewmodels;
 
 namespace Animerch.Controllers
 {
@@ -21,17 +22,18 @@ namespace Animerch.Controllers
         }
         public IActionResult Index()
         {
-            var TopUsers = context.User.Include(x => x.Transactions).Select(cl => new {
-                cl.UserName,
+            var TopUsers = context.User.Include(x => x.Transactions).Select(cl => new TopThing
+            {
+                Name = cl.UserName,
                 AmountSpent = cl.Transactions.Sum(c => c.Price)
             }
-            ).OrderByDescending(x => x.AmountSpent).Take(3);
+            ).OrderByDescending(x => x.AmountSpent).Take(3).ToList();
 
-            var TopMerch = context.Merchandise.Include(x => x.Transactions).Select(cl => new
+            var TopMerch = context.Merchandise.Include(x => x.Transactions).Select(cl => new TopThing
             {
-                cl.Name,
+                Name = cl.Name,
                 AmountSpent = cl.Transactions.Sum(c => c.Price)
-            });
+            }).OrderByDescending(x => x.AmountSpent).Take(3).ToList();
 
             ViewData["TopMerch"] = TopMerch;
             ViewData["TopUsers"] = TopUsers;
@@ -64,3 +66,5 @@ namespace Animerch.Controllers
         }
     }
 }
+
+    
