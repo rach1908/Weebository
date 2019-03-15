@@ -39,32 +39,8 @@ namespace Animerch.Controllers
             return View(userMerchandiseList);
         }
 
-        public IActionResult MerchandiseAdd()
-        {
-            var merchandiseList = context.Merchandise.ToList();
 
-            return View(merchandiseList);
-        }
-
-        public IActionResult MerchandiseAddEntry()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MerchandiseAddEntry([Bind("Price,Amount,ID,User,Merchandise")]Transaction transaction)
-        {
-            //find brugeren i databasen
-            //sætter du brugeren ind i transaction : transation.user = user;
-            
-            if (ModelState.IsValid)
-            {                
-                context.Add(transaction);
-                await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(transaction);
-        }
+        
 
         public IActionResult Friends()
         {
