@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Animerch.Data;
-@using Animerch.Controllers;
+@using Animerch.Models.DataTransferObjects;
 
-@model IEnumerable<Animerch.Models.Merchandise>
+@model IEnumerable<Animerch.Models.DataTransferObjects.MerchandiseFull>
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
@@ -13,7 +13,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <h2>Merchandise</h2>
+    <h2>My Merchandise</h2>
 
     
     <p>
@@ -36,10 +36,10 @@
                     @Html.DisplayNameFor(model => model.Manufacturer)
                 </th>
                 <th>
-                    Price
+                    @Html.DisplayNameFor(model => model.Price)
                 </th>
                 <th>
-                    Amount
+                    @Html.DisplayNameFor(model => model.Amount)
                 </th>
             </tr>
         </thead>

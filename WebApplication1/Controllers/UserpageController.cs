@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Animerch.Models.DataTransferObjects;
 
 
 namespace Animerch.Controllers
@@ -78,20 +79,4 @@ namespace Animerch.Controllers
         }
     }
 
-    public class MerchandiseFull
-    {
-        public int ID { get; set; }
-
-        public string Name { get; set; }
-
-        public string Type { get; set; }
-
-        public string Series { get; set; }
-
-        public string Manufacturer { get; set; }
-
-        public int Amount { get; set; }
-
-        public decimal Price { get; set; }
-    }
 }
