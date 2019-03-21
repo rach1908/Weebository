@@ -42,24 +42,56 @@ namespace Animerch.Controllers
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            
-            
+            //var userMerchandiseList = (from merch in context.Merchandise
+            //               join transaction in context.Transaction on merch.ID equals transaction.Merchandise.ID
+            //               join user in context.User on transaction.User.Id equals user.Id
+            //               where user.Id == userID
+            //               select merch).ToList();
+
 
             var userMerchandiseList = (from merch in context.Merchandise
-                           join transaction in context.Transaction on merch.ID equals transaction.Merchandise.ID
-                           join user in context.User on transaction.User.Id equals user.Id
-                           where user.Id == userID
-                           select merch).ToList();
+                                       join transaction in context.Transaction on merch.ID equals transaction.Merchandise.ID
+                                       join user in context.User on transaction.User.Id equals user.Id
+                                       where user.Id == userID
+                                       select new MerchandiseFull
+                                       {
+                                           ID = transaction.ID,
+                                           Name = merch.Name,
+                                           Type = merch.Type,
+                                           Series = merch.Series,
+                                           Manufacturer = merch.Manufacturer,
+                                           Amount = transaction.Amount,
+                                           Price = transaction.Price
+                                       });
+
+            ViewData.Add("mList", userMerchandiseList);
 
             return View(userMerchandiseList);
         }
 
-
         
+
 
         public IActionResult Friends()
         {
             return View();
         }
+    }
+
+    public class MerchandiseFull
+    {
+        public int ID { get; set; }
+
+        public string Name { get; set; }
+
+        public string Type { get; set; }
+
+        public string Series { get; set; }
+
+        public string Manufacturer { get; set; }
+
+        public int Amount { get; set; }
+
+        public decimal Price { get; set; }
     }
 }
