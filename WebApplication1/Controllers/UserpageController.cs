@@ -43,24 +43,9 @@ namespace Animerch.Controllers
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var userMerchandiseList = (from merch in context.Merchandise
-                                       join transaction in context.Transaction on merch.ID equals transaction.Merchandise.ID
-                                       join user in context.User on transaction.User.Id equals user.Id
-                                       where user.Id == userID
-                                       select new MerchandiseFull
-                                       {
-                                           ID = transaction.ID,
-                                           Name = merch.Name,
-                                           Type = merch.Type,
-                                           Series = merch.Series,
-                                           Manufacturer = merch.Manufacturer,
-                                           Amount = transaction.Amount,
-                                           Price = transaction.Price
-                                       });
+            var transactionList = context.Transaction.Where(x => x.User.Id.ToString() == userID).Include("Merchandise");
 
-            ViewData.Add("mList", userMerchandiseList);
-
-            return View(userMerchandiseList);
+            return View(transactionList);
         }
 
         // GET: Userpage/Edit/5
@@ -77,24 +62,10 @@ namespace Animerch.Controllers
                 return NotFound();
             }
 
+            var transactionItem = context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
 
-            var userMerchandiseFull = (from merch in context.Merchandise
-                                       join transactions in context.Transaction on merch.ID equals transaction.Merchandise.ID
-                                       where transactions.ID == id
-                                       select new MerchandiseFull
-                                       {
-                                           ID = transaction.ID,
-                                           Name = merch.Name,
-                                           Type = merch.Type,
-                                           Series = merch.Series,
-                                           Manufacturer = merch.Manufacturer,
-                                           Amount = transaction.Amount,
-                                           Price = transaction.Price
-                                       });
 
-            ViewData.Add("mFull", userMerchandiseFull);
-
-            return View(userMerchandiseFull as MerchandiseFull);
+            return View(transactionItem);
         }
 
         // POST: Userpage/Edit/5
@@ -102,7 +73,7 @@ namespace Animerch.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount")] MerchandiseFull transaction)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount")] Transaction transaction)
         {
             if (id != transaction.ID)
             {
@@ -127,9 +98,9 @@ namespace Animerch.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Merchandise));
             }
-            return View(transaction);
+            return RedirectToAction(nameof(Edit));
         }
 
 

@@ -1,19 +1,16 @@
 ﻿@using Animerch.Models.DataTransferObjects;
 
-@model Animerch.Models.DataTransferObjects.MerchandiseFull
+@model Animerch.Models.Transaction
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-@{
-    var merch = ViewData["mFull"] as MerchandiseFull;
-}
 
 <h2>Edit Entry</h2>
 
 
-<h4>@Html.DisplayFor(Model => Model.Name)</h4>
+<p>@Html.DisplayFor(Model => Model.Merchandise.Name) - @Html.DisplayFor(Model => Model.Merchandise.Type) - @Html.DisplayFor(Model => Model.Merchandise.Manufacturer)</p>
 <hr />
 <div class="row">
     <div class="col-md-4">

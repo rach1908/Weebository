@@ -2,7 +2,7 @@
 @using Animerch.Data;
 @using Animerch.Models.DataTransferObjects;
 
-@model IEnumerable<Animerch.Models.DataTransferObjects.MerchandiseFull>
+@model IEnumerable<Animerch.Models.Transaction>
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
@@ -24,16 +24,16 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Merchandise.Name)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Series)
+                    @Html.DisplayNameFor(model => model.Merchandise.Series)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Type)
+                    @Html.DisplayNameFor(model => model.Merchandise.Type)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Manufacturer)
+                    @Html.DisplayNameFor(model => model.Merchandise.Manufacturer)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Price)
@@ -47,20 +47,20 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in ViewData["mList"] as IEnumerable<MerchandiseFull>)
+            @foreach (var item in Model)
             {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.Merchandise.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Series)
+                    @Html.DisplayFor(modelItem => item.Merchandise.Series)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Type)
+                    @Html.DisplayFor(modelItem => item.Merchandise.Type)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Manufacturer)
+                    @Html.DisplayFor(modelItem => item.Merchandise.Manufacturer)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)

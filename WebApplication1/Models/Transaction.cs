@@ -19,10 +19,8 @@ namespace Animerch.Models
         [Required]
         public int Amount { get; set; }
 
-        [Required]
         public User User{ get; set; }
 
-        [Required]
         public Merchandise Merchandise { get; set; }
     }
 }
