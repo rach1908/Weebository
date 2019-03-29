@@ -27,9 +27,31 @@ namespace Animerch.Controllers
             return View(merchandiseList);
         }
 
-        public IActionResult MerchandiseAddEntry()
+        public IActionResult Create(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merch = context.Merchandise.Find(id);
+            if (merch == null)
+            {
+                return NotFound();
+            }
+
+            var merchItem = context.Merchandise.Where(x => x.ID == id).FirstOrDefault();
+
+            ViewData.Add("selectedMerch", merchItem);
+
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Price, Amount")] Transaction transaction)
+        {
+            
+            return null;
+            
         }
 
         [HttpPost]

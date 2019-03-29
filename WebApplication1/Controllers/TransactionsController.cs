@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Animerch.Data;
 using Animerch.Models;
-using Animerch.Models.DataTransferObjects;
 
 namespace Animerch.Controllers
 {
