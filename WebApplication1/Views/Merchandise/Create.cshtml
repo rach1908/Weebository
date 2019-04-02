@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using Animerch.Data;
+@using Animerch.Models;
 
 @model Animerch.Models.Transaction
 
@@ -14,11 +15,11 @@
 {
     <h2>Add Merchandise</h2>
     
-    <p>Transaction</p>
+    <p>@((ViewData["selectedMerch"] as Merchandise).Name) - @((ViewData["selectedMerch"] as Merchandise).Type) - @((ViewData["selectedMerch"] as Merchandise).Manufacturer)</p>
     <hr/>
     <div class="row">
         <div class="col-md-4">
-            <form asp-action="MerchandiseAddEntry">
+            <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Price" class="control-label"></label>
@@ -29,6 +30,9 @@
                     <label asp-for="Amount" class="control-label">Amount</label>
                     <input asp-for="Amount" class="form-control" />
                     <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                <div hidden>
+                    <input asp-for="Merchandise" value="@(ViewData["SelectedMerch"] as Merchandise)"/>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-default" />

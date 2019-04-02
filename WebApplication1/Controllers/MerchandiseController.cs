@@ -47,11 +47,17 @@ namespace Animerch.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Price, Amount")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("Price, Amount, Merchandise")] Transaction transaction)
         {
-            
-            return null;
-            
+
+            if (ModelState.IsValid)
+            {
+                context.Add(transaction);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(transaction);
+
         }
 
         [HttpPost]
