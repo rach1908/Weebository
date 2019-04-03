@@ -13,10 +13,13 @@ namespace Animerch.Controllers
 {
     public class MerchandiseController : Controller
     {
+        public SignInManager<User> signInManager;
+        public UserManager<User> userManager;
         public List<Merchandise> Merchandises { get; private set; }
         private readonly ApplicationDbContext context;
-        public MerchandiseController(ApplicationDbContext context)
+        public MerchandiseController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
+            this.signInManager = signInManager;
             this.context = context;
         }
 
@@ -47,8 +50,11 @@ namespace Animerch.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Price, Amount, Merchandise")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("Price, Amount, MerchandiseId")] Transaction transaction)
         {
+            transaction.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //Modelstate does not include the above statement, so UserId is considered NULL
 
             if (ModelState.IsValid)
             {
@@ -56,7 +62,7 @@ namespace Animerch.Controllers
                 await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(transaction);
+            return RedirectToAction("Create/" + transaction.MerchandiseId);
 
         }
 
