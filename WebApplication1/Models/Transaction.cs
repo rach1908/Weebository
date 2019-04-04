@@ -19,10 +19,14 @@ namespace Animerch.Models
         [Required]
         public int Amount { get; set; }
 
-        [Required]
         public User User{ get; set; }
 
         [Required]
+        public string UserId { get; set; }
+
         public Merchandise Merchandise { get; set; }
+
+        [Required]
+        public int MerchandiseId { get; set; }
     }
 }

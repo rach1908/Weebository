@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using Animerch.Data;
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,9 +37,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Merchandise" asp-action="Index">Merchandise</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li><a asp-area="" asp-controller="Userpage" asp-action="Index">My Page</a></li>
+                        <li><a asp-area="" asp-controller="Userpage" asp-action="Merchandise">My Merchandise</a></li>
+                    }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
@@ -45,7 +57,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2019 - AnimerchApp</p>
+            <p>&copy; @DateTime.Now.Year - AnimerchApp</p>
             @* Delete before merging with master. Or not. Your choice *@ <img src="http://place-sloth.com/100-100.jpg" />
         </footer>
     </div>

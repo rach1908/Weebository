@@ -9,66 +9,109 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
+
 namespace Animerch.Controllers
 {    
     public class UserpageController : Controller
     {
+        public SignInManager<User> signInManager;
+        public UserManager<User> userManager;
         public List<Merchandise> Merchandises { get; private set; }
         private readonly ApplicationDbContext context;
-        public UserpageController(ApplicationDbContext context)
+        public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
+            this.signInManager = signInManager;
             this.context = context;
         }
 
         public IActionResult Index()
         {
+            if (signInManager.IsSignedIn(User))
+            {
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
                      
-            return View();
         }
 
         public IActionResult Merchandise()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var userMerchandiseList = (from merch in context.Merchandise
-                           join transaction in context.Transaction on merch.ID equals transaction.Merchandise.ID
-                           join user in context.User on transaction.User.Id equals user.Id
-                           where user.Id == userID
-                           select merch).ToList();
+            var transactionList = context.Transaction.Where(x => x.User.Id.ToString() == userID).Include("Merchandise");
 
-            return View(userMerchandiseList);
+            return View(transactionList);
         }
 
-        public IActionResult MerchandiseAdd()
+        // GET: Userpage/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            var merchandiseList = context.Merchandise.ToList();
-
-            return View(merchandiseList);
-        }
-
-        public IActionResult MerchandiseAddEntry()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MerchandiseAddEntry([Bind("Price,Amount,ID,User,Merchandise")]Transaction transaction)
-        {
-            //find brugeren i databasen
-            //sætter du brugeren ind i transaction : transation.user = user;
-            
-            if (ModelState.IsValid)
-            {                
-                context.Add(transaction);
-                await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            if (id == null)
+            {
+                return NotFound();
             }
-            return View(transaction);
+
+            var transaction = await context.Transaction.FindAsync(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            var transactionItem = context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
+
+
+            return View(transactionItem);
         }
+
+        // POST: Userpage/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount")] Transaction transaction)
+        {
+            if (id != transaction.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    context.Update(transaction);
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TransactionExists(transaction.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Merchandise));
+            }
+            return RedirectToAction(nameof(Edit));
+        }
+
 
         public IActionResult Friends()
         {
             return View();
         }
+
+        private bool TransactionExists(int id)
+        {
+            return context.Transaction.Any(e => e.ID == id);
+        }
     }
+
 }
