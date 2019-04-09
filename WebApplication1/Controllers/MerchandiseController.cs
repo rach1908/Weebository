@@ -54,7 +54,6 @@ namespace Animerch.Controllers
         {
             transaction.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //Modelstate does not include the above statement, so UserId is considered NULL
 
             if (ModelState.IsValid)
             {

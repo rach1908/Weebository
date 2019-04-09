@@ -72,7 +72,7 @@ namespace Animerch.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount")] Transaction transaction)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount,MerchandiseId")] Transaction transaction)
         {
             if (id != transaction.ID)
             {
@@ -97,9 +97,9 @@ namespace Animerch.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Merchandise));
+                return RedirectToAction("Merchandise");
             }
-            return RedirectToAction(nameof(Edit));
+            return RedirectToAction("Edit/" + id);
         }
 
 
