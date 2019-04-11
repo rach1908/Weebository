@@ -18,7 +18,6 @@ namespace Animerch.Controllers
 
         private readonly ApplicationDbContext context;
 
-
         public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
             this.signInManager = signInManager;
@@ -102,7 +101,6 @@ namespace Animerch.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTransaction(int? id)
-
         {
             if (id == null)
             {

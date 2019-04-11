@@ -13,11 +13,7 @@ namespace Animerch.Controllers
 {
     public class MerchandiseController : Controller
     {
-        public SignInManager<User> signInManager;
-
-        public UserManager<User> userManager;
-
-        public List<Merchandise> Merchandises { get; private set; }
+        private SignInManager<User> signInManager;
 
         private readonly ApplicationDbContext context;
 
@@ -34,14 +30,48 @@ namespace Animerch.Controllers
             return View(merchandiseList);
         }
 
+<<<<<<< HEAD
         
+=======
+        public IActionResult Create(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merch = context.Merchandise.Find(id);
+
+            if (merch == null)
+            {
+                return NotFound();
+            }
+
+            var merchItem = context.Merchandise.Where(x => x.ID == id).FirstOrDefault();
+
+            ViewData.Add("selectedMerch", merchItem);
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Price, Amount, MerchandiseId")] Transaction transaction)
+        {
+            transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
+
+            if (ModelState.IsValid)
+            {
+                context.Add(transaction);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction("Create/" + transaction.MerchandiseId);
+        }
+>>>>>>> 6616d634326ca89b318f34e8302364436f4390b7
 
         [HttpPost]
         public async Task<IActionResult> MerchandiseAddEntry([Bind("Price,Amount,ID,User,Merchandise")]Transaction transaction)
-        {
-            //find brugeren i databasen
-            //sætter du brugeren ind i transaction : transation.user = user;
-
+        {            
             if (ModelState.IsValid)
             {
                 context.Add(transaction);
