@@ -40,7 +40,7 @@ namespace Animerch.Controllers
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var transactionList = context.Transaction.Where(x => x.User.Id.ToString() == userID).Include("Merchandise");
+            var transactionList = context.Transaction.Where(x => x.User.Id.ToString() == userID).Include(x => x.Merchandise);
 
             return View(transactionList);
         }
@@ -93,7 +93,7 @@ namespace Animerch.Controllers
                 return NotFound();
             }
 
-            context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
+            context.Transaction.Where(x => x.ID == id).Include(x => x.Merchandise).FirstOrDefault();
 
             return View(transaction);
         }
@@ -146,8 +146,7 @@ namespace Animerch.Controllers
                 return NotFound();
             }
 
-            context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
-
+            context.Transaction.Where(x => x.ID == id).Include(x => x.Merchandise).FirstOrDefault();
 
             return View(transaction);
         }
