@@ -14,10 +14,13 @@ namespace Animerch.Controllers
 {    
     public class UserpageController : Controller
     {
-        public SignInManager<User> signInManager;
-        public UserManager<User> userManager;
-        public List<Merchandise> Merchandises { get; private set; }
+        private SignInManager<User> signInManager;
+
+        //public List<Merchandise> Merchandises { get; private set; }
+
         private readonly ApplicationDbContext context;
+
+
         public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
             this.signInManager = signInManager;
@@ -27,15 +30,13 @@ namespace Animerch.Controllers
         public IActionResult Index()
         {
             if (signInManager.IsSignedIn(User))
-            {
-
+            {              
                 return View();
             }
             else
             {
                 return RedirectToAction("Index", "Home");
-            }
-                     
+            }            
         }
 
         public IActionResult Merchandise()
@@ -47,7 +48,6 @@ namespace Animerch.Controllers
             return View(transactionList);
         }
 
-        // GET: Userpage/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -63,23 +63,21 @@ namespace Animerch.Controllers
 
             var transactionItem = context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
 
-
-            return View(transactionItem);
+            return View(transaction);
         }
 
-        // POST: Userpage/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount")] Transaction transaction)
+        public async Task<IActionResult> EditTransaction(int? id)
         {
-            if (id != transaction.ID)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var transaction = await context.Transaction.SingleOrDefaultAsync(t => t.ID == id);
+
+            if (await TryUpdateModelAsync(transaction, "", t => t.Price, t => t.Amount))
             {
                 try
                 {
@@ -113,5 +111,4 @@ namespace Animerch.Controllers
             return context.Transaction.Any(e => e.ID == id);
         }
     }
-
 }

@@ -5,7 +5,6 @@
 @model Animerch.Models.Transaction
 
 @inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Add Merchandise";
@@ -32,7 +31,7 @@
                     <span asp-validation-for="Amount" class="text-danger"></span>
                 </div>
                 <div class="form-group" hidden>
-                    <input asp-for="MerchandiseId" class="form-control" value="@((ViewData["SelectedMerch"] as Merchandise).ID)"/>
+                    <input asp-for="MerchandiseId" class="form-control" value="@((ViewData["selectedMerch"] as Merchandise).ID)"/>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-default" />

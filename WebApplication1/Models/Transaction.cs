@@ -13,6 +13,7 @@ namespace Animerch.Models
         public int ID { get; set; }
 
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C00}")]
         [Required]
         public decimal Price { get; set; }
 
@@ -21,7 +22,7 @@ namespace Animerch.Models
 
         public User User{ get; set; }
 
-        [Required]
+        //[Required]
         public string UserId { get; set; }
 
         public Merchandise Merchandise { get; set; }

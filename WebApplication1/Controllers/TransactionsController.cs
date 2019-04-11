@@ -7,25 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Animerch.Data;
 using Animerch.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Animerch.Controllers
 {
     public class TransactionsController : Controller
     {
+        private readonly SignInManager<User> _signInManager;
+
         private readonly ApplicationDbContext _context;
 
-        public TransactionsController(ApplicationDbContext context)
+        public TransactionsController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
             _context = context;
+            _signInManager = signInManager;
         }
 
-        // GET: Transactions
         public async Task<IActionResult> Index()
         {
             return View(await _context.Transaction.ToListAsync());
         }
 
-        // GET: Transactions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,6 +37,7 @@ namespace Animerch.Controllers
 
             var transaction = await _context.Transaction
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (transaction == null)
             {
                 return NotFound();
@@ -43,31 +46,32 @@ namespace Animerch.Controllers
             return View(transaction);
         }
 
-        // GET: Transactions/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Transactions/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Price,Amount")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("ID,Price,Amount,MerchandiseId")] Transaction transaction)
         {
+            var user = await _signInManager.UserManager.GetUserAsync(_signInManager.Context.User);
+
+            transaction.UserId = user.Id;
+
             if (ModelState.IsValid)
             {
                 _context.Add(transaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(transaction);
+            else
+            {
+                ViewData["Error"] = "An error occured. Are you missing a required field?";
+                return View(transaction);
+            }
         }
 
-        
-
-        // GET: Transactions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -85,7 +89,6 @@ namespace Animerch.Controllers
             return View(transaction);
         }
 
-        // POST: Transactions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -96,6 +99,21 @@ namespace Animerch.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var transaction = await _context.Transaction.SingleOrDefaultAsync(t => t.ID == id);
+
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
     }
 }

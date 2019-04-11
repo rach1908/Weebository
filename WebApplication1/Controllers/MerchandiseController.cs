@@ -14,9 +14,13 @@ namespace Animerch.Controllers
     public class MerchandiseController : Controller
     {
         public SignInManager<User> signInManager;
+
         public UserManager<User> userManager;
+
         public List<Merchandise> Merchandises { get; private set; }
+
         private readonly ApplicationDbContext context;
+
         public MerchandiseController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
             this.signInManager = signInManager;
@@ -45,14 +49,15 @@ namespace Animerch.Controllers
 
             var merchItem = context.Merchandise.Where(x => x.ID == id).FirstOrDefault();
 
-            ViewData.Add("selectedMerch", merchItem);
+            ViewData.Add("selectedMerch", merchItem);            
 
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Price, Amount, MerchandiseId")] Transaction transaction)
         {
-            transaction.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
 
             //Modelstate does not include the above statement, so UserId is considered NULL
 
@@ -63,7 +68,6 @@ namespace Animerch.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction("Create/" + transaction.MerchandiseId);
-
         }
 
         [HttpPost]
