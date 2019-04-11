@@ -25,14 +25,14 @@ namespace Animerch.Controllers
             var TopUsers = context.User.Include(x => x.Transactions).Select(cl => new TopThing
             {
                 Name = cl.UserName,
-                AmountSpent = cl.Transactions.Sum(c => c.Price)
+                AmountSpent = cl.Transactions.Sum(c => c.Price * c.Amount)
             }
             ).OrderByDescending(x => x.AmountSpent).Take(3).ToList();
 
             var TopMerch = context.Merchandise.Include(x => x.Transactions).Select(cl => new TopThing
             {
                 Name = cl.Name,
-                AmountSpent = cl.Transactions.Sum(c => c.Price)
+                AmountSpent = cl.Transactions.Sum(c => c.Price * c.Amount)
             }).OrderByDescending(x => x.AmountSpent).Take(3).ToList();
 
             ViewData["TopMerch"] = TopMerch;
