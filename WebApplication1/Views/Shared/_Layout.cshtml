@@ -43,7 +43,7 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Userpage" asp-action="Index">My Page</a></li>
-                        <li><a asp-area="" asp-controller="Userpage" asp-action="Merchandise">My Merchandise</a></li>
+                        <li><a asp-area="" asp-controller="Userpage" asp-action="UserMerchandise">My Merchandise</a></li>
                     }
                 </ul>
                 <partial name="_LoginPartial" />

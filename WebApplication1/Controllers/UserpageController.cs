@@ -16,8 +16,6 @@ namespace Animerch.Controllers
     {
         private SignInManager<User> signInManager;
 
-        //public List<Merchandise> Merchandises { get; private set; }
-
         private readonly ApplicationDbContext context;
 
 
@@ -39,13 +37,48 @@ namespace Animerch.Controllers
             }            
         }
 
-        public IActionResult Merchandise()
+        public IActionResult UserMerchandise()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var transactionList = context.Transaction.Where(x => x.User.Id.ToString() == userID).Include("Merchandise");
 
             return View(transactionList);
+        }
+
+        public IActionResult Create(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merch = context.Merchandise.Find(id);
+            if (merch == null)
+            {
+                return NotFound();
+            }
+
+            var merchItem = context.Merchandise.Where(x => x.ID == id).FirstOrDefault();
+
+            ViewData.Add("selectedMerch", merchItem);
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Price, Amount, MerchandiseId")] Transaction transaction)
+        {
+            transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
+
+
+            if (ModelState.IsValid)
+            {
+                context.Add(transaction);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(UserMerchandise));
+            }
+            return RedirectToAction("Create/" + transaction.MerchandiseId);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -61,18 +94,15 @@ namespace Animerch.Controllers
                 return NotFound();
             }
 
-            var transactionItem = context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
+            context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
 
             return View(transaction);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-<<<<<<< HEAD
         public async Task<IActionResult> EditTransaction(int? id)
-=======
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount,MerchandiseId")] Transaction transaction)
->>>>>>> 4fb25d3fab951cedea2fa9adf92cc77ad9baa832
+
         {
             if (id == null)
             {
@@ -104,6 +134,35 @@ namespace Animerch.Controllers
             return RedirectToAction("Edit/" + id);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var transaction = await context.Transaction
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            context.Transaction.Where(x => x.ID == id).Include("Merchandise").FirstOrDefault();
+
+
+            return View(transaction);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var transaction = await context.Transaction.FindAsync(id);
+            context.Transaction.Remove(transaction);
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(UserMerchandise));
+        }
 
         public IActionResult Friends()
         {

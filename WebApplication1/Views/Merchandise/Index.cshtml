@@ -49,7 +49,7 @@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <td>
-                        <a asp-controller="Merchandise" asp-action="Create" asp-route-id="@item.ID">Add to your merchandise</a>
+                        <a asp-controller="Userpage" asp-action="Create" asp-route-id="@item.ID">Add to your merchandise</a>
                     </td>
                 }
             </tr>
