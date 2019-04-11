@@ -68,7 +68,11 @@ namespace Animerch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
         public async Task<IActionResult> EditTransaction(int? id)
+=======
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount,MerchandiseId")] Transaction transaction)
+>>>>>>> 4fb25d3fab951cedea2fa9adf92cc77ad9baa832
         {
             if (id == null)
             {
@@ -95,9 +99,9 @@ namespace Animerch.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Merchandise));
+                return RedirectToAction("Merchandise");
             }
-            return RedirectToAction(nameof(Edit));
+            return RedirectToAction("Edit/" + id);
         }
 
 

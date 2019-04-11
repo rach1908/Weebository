@@ -22,8 +22,13 @@ namespace Animerch.Models
 
         public User User{ get; set; }
 
+<<<<<<< HEAD
         //[Required]
+=======
+>>>>>>> 4fb25d3fab951cedea2fa9adf92cc77ad9baa832
         public string UserId { get; set; }
+
+        //UserId is not required since it is not passed into methods, and as such cannot be verified by the ModelState
 
         public Merchandise Merchandise { get; set; }
 

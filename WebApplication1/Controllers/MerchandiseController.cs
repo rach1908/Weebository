@@ -59,7 +59,6 @@ namespace Animerch.Controllers
         {
             transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
 
-            //Modelstate does not include the above statement, so UserId is considered NULL
 
             if (ModelState.IsValid)
             {
