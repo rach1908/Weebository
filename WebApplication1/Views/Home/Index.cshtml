@@ -1,6 +1,39 @@
-﻿@{
+﻿@model Animerch.Models.Transaction
+@using Animerch.Models.Viewmodels
+
+@{
     ViewData["Title"] = "Homepage";
+
 }
 
 <h1 class="h1">Homepage</h1>
 <h4>Test Password: Test@0</h4>
+<div>
+    <div id="TopUsers">
+        <h3 class="h3">Top Weebs</h3>
+        <ul class="list-unstyled">
+            @foreach (var item in ViewData["TopUsers"] as List<TopThing>)
+            {
+                <li>
+                    <p>@item.Name</p>
+                    <p>@item.AmountSpent</p>
+                    <hr />
+                </li>
+            }
+        </ul>
+    </div>
+    <div id="TopMerch">
+        <h3 class="h3">Top Merch</h3>
+        <ul class="list-unstyled">
+            @foreach (var item in ViewData["TopMerch"] as List<TopThing>)
+            {
+                <li>
+                    <p>@item.Name</p>
+                    <p>@item.AmountSpent</p>
+                    <hr />
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+

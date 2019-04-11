@@ -1,17 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Animerch.Models;
+using Animerch.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
+using Animerch.Models.Viewmodels;
 
 namespace Animerch.Controllers
 {
     public class HomeController : Controller
     {
+
+        private readonly ApplicationDbContext context;
+        public HomeController(ApplicationDbContext context)
+        {
+            this.context = context;
+        }
         public IActionResult Index()
         {
+            var TopUsers = context.User.Include(x => x.Transactions).Select(cl => new TopThing
+            {
+                Name = cl.UserName,
+                AmountSpent = cl.Transactions.Sum(c => c.Price)
+            }
+            ).OrderByDescending(x => x.AmountSpent).Take(3).ToList();
+
+            var TopMerch = context.Merchandise.Include(x => x.Transactions).Select(cl => new TopThing
+            {
+                Name = cl.Name,
+                AmountSpent = cl.Transactions.Sum(c => c.Price)
+            }).OrderByDescending(x => x.AmountSpent).Take(3).ToList();
+
+            ViewData["TopMerch"] = TopMerch;
+            ViewData["TopUsers"] = TopUsers;
             return View();
         }
 
@@ -41,3 +66,5 @@ namespace Animerch.Controllers
         }
     }
 }
+
+    

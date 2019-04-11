@@ -1,0 +1,8 @@
+Hjemmesideideer:
+Navbar:
+Min side (kun hvis bruger er logget ind)
+Body:
+Liste af top brugere
+Liste af nye / mest populære merchandise
+News
+Waifu of the month
