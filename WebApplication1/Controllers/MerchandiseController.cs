@@ -13,11 +13,7 @@ namespace Animerch.Controllers
 {
     public class MerchandiseController : Controller
     {
-        public SignInManager<User> signInManager;
-
-        public UserManager<User> userManager;
-
-        public List<Merchandise> Merchandises { get; private set; }
+        private SignInManager<User> signInManager;
 
         private readonly ApplicationDbContext context;
 
@@ -42,6 +38,7 @@ namespace Animerch.Controllers
             }
 
             var merch = context.Merchandise.Find(id);
+
             if (merch == null)
             {
                 return NotFound();
@@ -49,7 +46,7 @@ namespace Animerch.Controllers
 
             var merchItem = context.Merchandise.Where(x => x.ID == id).FirstOrDefault();
 
-            ViewData.Add("selectedMerch", merchItem);            
+            ViewData.Add("selectedMerch", merchItem);
 
             return View();
         }
@@ -58,7 +55,6 @@ namespace Animerch.Controllers
         public async Task<IActionResult> Create([Bind("Price, Amount, MerchandiseId")] Transaction transaction)
         {
             transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
-
 
             if (ModelState.IsValid)
             {
@@ -71,10 +67,7 @@ namespace Animerch.Controllers
 
         [HttpPost]
         public async Task<IActionResult> MerchandiseAddEntry([Bind("Price,Amount,ID,User,Merchandise")]Transaction transaction)
-        {
-            //find brugeren i databasen
-            //sætter du brugeren ind i transaction : transation.user = user;
-
+        {            
             if (ModelState.IsValid)
             {
                 context.Add(transaction);

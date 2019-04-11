@@ -16,10 +16,7 @@ namespace Animerch.Controllers
     {
         private SignInManager<User> signInManager;
 
-        //public List<Merchandise> Merchandises { get; private set; }
-
         private readonly ApplicationDbContext context;
-
 
         public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager)
         {
@@ -68,11 +65,7 @@ namespace Animerch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-<<<<<<< HEAD
         public async Task<IActionResult> EditTransaction(int? id)
-=======
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Price,Amount,MerchandiseId")] Transaction transaction)
->>>>>>> 4fb25d3fab951cedea2fa9adf92cc77ad9baa832
         {
             if (id == null)
             {
