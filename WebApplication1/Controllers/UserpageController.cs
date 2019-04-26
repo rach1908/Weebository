@@ -70,7 +70,6 @@ namespace Animerch.Controllers
         {
             transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
 
-
             if (ModelState.IsValid)
             {
                 context.Add(transaction);
