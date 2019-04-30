@@ -13,6 +13,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190424120757_FriendEntryClass.cs" />
+    <Compile Remove="Migrations\20190424120757_FriendEntryClass.Designer.cs" />
+    <Compile Remove="Migrations\20190425084406_FriendEntryUpdate.cs" />
+    <Compile Remove="Migrations\20190425084406_FriendEntryUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20190425084628_FriendEntry.cs" />
+    <Compile Remove="Migrations\20190425084628_FriendEntry.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.7" PrivateAssets="All" />

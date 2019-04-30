@@ -4,14 +4,16 @@ using Animerch.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Animerch.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190426090645_UserFriendlist")]
+    partial class UserFriendlist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,8 +85,6 @@ namespace Animerch.Migrations
                     b.Property<bool>("RequestAccepted");
 
                     b.HasKey("UserID", "FriendID");
-
-                    b.HasIndex("FriendID");
 
                     b.ToTable("FriendEntry");
                 });
@@ -252,19 +252,6 @@ namespace Animerch.Migrations
                     b.HasOne("Animerch.Data.User")
                         .WithMany("Friends")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Animerch.Models.FriendEntry", b =>
-                {
-                    b.HasOne("Animerch.Data.User", "Friend")
-                        .WithMany()
-                        .HasForeignKey("FriendID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Animerch.Data.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Animerch.Models.Transaction", b =>

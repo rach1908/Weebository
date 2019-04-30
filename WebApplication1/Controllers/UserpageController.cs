@@ -16,11 +16,14 @@ namespace Animerch.Controllers
     {
         private SignInManager<User> signInManager;
 
+        private UserManager<User> userManager;
+
         private readonly ApplicationDbContext context;
 
-        public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager)
+        public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager, UserManager<User> userManager)
         {
             this.signInManager = signInManager;
+            this.userManager = userManager;
             this.context = context;
         }
 
@@ -32,15 +35,13 @@ namespace Animerch.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Account/Login", "Identity");
             }            
         }
 
         public IActionResult UserMerchandise()
         {
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var transactionList = context.Transaction.Where(x => x.User.Id.ToString() == userID).Include("Merchandise");
+            var transactionList = context.Transaction.Where(x => x.User.Id == userManager.GetUserId(User)).Include("Merchandise");
 
             return View(transactionList);
         }
@@ -53,6 +54,7 @@ namespace Animerch.Controllers
             }
 
             var merch = context.Merchandise.Find(id);
+
             if (merch == null)
             {
                 return NotFound();
@@ -68,8 +70,7 @@ namespace Animerch.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Price, Amount, MerchandiseId")] Transaction transaction)
         {
-            transaction.UserId = (await signInManager.UserManager.GetUserAsync(signInManager.Context.User)).Id;
-
+            transaction.UserId = userManager.GetUserId(User);
 
             if (ModelState.IsValid)
             {
@@ -88,6 +89,7 @@ namespace Animerch.Controllers
             }
 
             var transaction = await context.Transaction.FindAsync(id);
+
             if (transaction == null)
             {
                 return NotFound();
@@ -162,7 +164,38 @@ namespace Animerch.Controllers
             return RedirectToAction(nameof(UserMerchandise));
         }
 
-        public IActionResult Friends()
+        public async Task<IActionResult> Friends()
+        {
+            if (User == null)
+            {
+                return NotFound();
+            }
+            User user = await userManager.GetUserAsync(User);
+            var friends = new List<User>();
+            var friendEntries = await context.FriendEntry.Where(FE => FE.UserID == user.Id).ToListAsync();
+            ViewData.Add("UserFriendListEntries", friendEntries);
+                
+            //context.User.Where(U => U.Id context.FriendEntry.);
+
+            foreach (var friendEntry in friendEntries)
+            {
+                friends.Add(await context.User.FirstAsync(U => U.Id == friendEntry.FriendID));
+            }
+            user.Friends = friends;
+
+            return View();
+        }
+
+        public async Task<IActionResult> Users()
+        {
+            var users = await context.User.ToListAsync();
+            
+            ViewData.Add("Users", users);
+
+            return View();
+        }
+
+        public IActionResult OtherUser(string userName)
         {
             return View();
         }
@@ -170,6 +203,18 @@ namespace Animerch.Controllers
         private bool TransactionExists(int id)
         {
             return context.Transaction.Any(e => e.ID == id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UsersAddFriend([Bind("UserID,FriendID")]FriendEntry friendEntry)
+        {
+            if (ModelState.IsValid)
+            {
+                context.FriendEntry.Add(friendEntry);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(Users));
+            }
+            return RedirectToAction(nameof(Users));
         }
     }
 }

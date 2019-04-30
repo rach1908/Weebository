@@ -9,6 +9,6 @@ namespace Animerch.Models.Viewmodels
     {
         public string Name { get; set; }
 
-        public Decimal AmountSpent { get; set; }
+        public decimal AmountSpent { get; set; }
     }
 }

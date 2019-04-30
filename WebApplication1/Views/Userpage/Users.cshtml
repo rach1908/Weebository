@@ -1,0 +1,50 @@
+﻿@using Animerch.Data;
+@using Animerch.Models;
+@using Microsoft.AspNetCore.Identity;
+
+@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+
+@model FriendEntry
+
+@{
+    ViewData["Title"] = "User List";
+    List<User> Users = ViewData["Users"] as List<User>;
+    User loggedInUser = await userManager.GetUserAsync(User);
+    //loggedInUser.Friends = null;
+}
+<h2>List of Users</h2>
+
+<table class="table">
+    <thead>
+
+    </thead>
+    <tbody>
+        @foreach (var user in Users)
+        {
+        <tr>
+            <td><h3 class="h3">@user.UserName</h3></td>
+            <td hidden="hidden"><input class="form-control" value="@user.Id" /></td>
+            <td>
+                <form asp-controller="Userpage" asp-action="UsersAddFriend">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">                        
+                        <input asp-for="UserID" type="hidden" class="form-control" value="@userManager.GetUserId(User)"/>
+                        <span asp-validation-for="UserID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="FriendID" type="hidden" class="form-control" value="@user.Id"/>
+                        <span asp-validation-for="FriendID" class="text-danger"></span>
+                    </div>
+                    @if (signInManager.IsSignedIn(User) && loggedInUser != user)
+                    {
+                        <div class="form-group">
+                            <input type="submit" value="Add to friends" class="btn btn-default" />
+                        </div>
+                    }
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

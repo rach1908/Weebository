@@ -11,5 +11,7 @@ namespace Animerch.Data
     public class User : IdentityUser
     {
         public List<Transaction> Transactions { get; set; }
+        
+        public List<User> Friends { get; set; }    
     }
 }

@@ -30,8 +30,6 @@ namespace Animerch.Controllers
             return View(merchandiseList);
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> MerchandiseAddEntry([Bind("Price,Amount,ID,User,Merchandise")]Transaction transaction)
         {            

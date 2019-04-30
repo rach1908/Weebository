@@ -20,11 +20,14 @@ namespace Animerch.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("User");
+            builder.Entity<User>().HasMany(u => u.Friends);
             builder.Entity<Transaction>().Property(t => t.Amount).HasDefaultValue(1);
+            builder.Entity<FriendEntry>().HasKey(k => new { k.UserID, k.FriendID });       
         }
 
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Merchandise> Merchandise { get; set; }
+        public DbSet<FriendEntry> FriendEntry { get; set; }
     }
 }
