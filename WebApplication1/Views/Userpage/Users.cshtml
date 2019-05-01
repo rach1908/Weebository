@@ -25,10 +25,10 @@
             <td><h3 class="h3">@user.UserName</h3></td>
             <td hidden="hidden"><input class="form-control" value="@user.Id" /></td>
             <td>
-                <form asp-controller="Userpage" asp-action="UsersAddFriend">
+                <form asp-controller="Userpage" asp-action="UserAddFriend">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">                        
-                        <input asp-for="UserID" type="hidden" class="form-control" value="@userManager.GetUserId(User)"/>
+                        <input asp-for="UserID" type="hidden" class="form-control" value="@loggedInUser.Id"/>
                         <span asp-validation-for="UserID" class="text-danger"></span>
                     </div>
                     <div class="form-group">

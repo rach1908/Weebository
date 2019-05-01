@@ -84,8 +84,6 @@ namespace Animerch.Migrations
 
                     b.HasKey("UserID", "FriendID");
 
-                    b.HasIndex("FriendID");
-
                     b.ToTable("FriendEntry");
                 });
 
@@ -252,19 +250,6 @@ namespace Animerch.Migrations
                     b.HasOne("Animerch.Data.User")
                         .WithMany("Friends")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Animerch.Models.FriendEntry", b =>
-                {
-                    b.HasOne("Animerch.Data.User", "Friend")
-                        .WithMany()
-                        .HasForeignKey("FriendID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Animerch.Data.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Animerch.Models.Transaction", b =>

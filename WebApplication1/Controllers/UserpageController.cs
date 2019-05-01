@@ -27,6 +27,11 @@ namespace Animerch.Controllers
             this.userManager = userManager;            
         }
 
+        private bool TransactionExists(int id)
+        {
+            return context.Transaction.Any(e => e.ID == id);
+        }
+
         private async Task<User> GetUser()
         {         
             return await userManager.GetUserAsync(User);
@@ -34,7 +39,11 @@ namespace Animerch.Controllers
 
         private async Task<List<User>> GetFriends(string userId)
         {
-            return await context.FriendEntry.Where(FE => FE.UserID == userId).Include(U => U.Friend).Select(U => U.Friend).ToListAsync();
+            var friends = new List<User>();
+
+            friends.AddRange(await context.FriendEntry.Where(FE => FE.FriendID == userId).Include(U => U.User).Select(U => U.User).ToListAsync());
+
+            return friends;
         }
 
         public IActionResult Index()
@@ -174,20 +183,6 @@ namespace Animerch.Controllers
             return RedirectToAction(nameof(UserMerchandise));
         }
 
-        public async Task<IActionResult> Friends()
-        {
-            if (User == null)
-            {
-                return NotFound();
-            }
-            User user = await GetUser();
-            user.Friends = await GetFriends(user.Id);
-            var friendEntries = await context.FriendEntry.Where(FE => FE.UserID == user.Id).ToListAsync();
-            ViewData.Add("UserFriendListEntries", friendEntries);
-
-            return View();
-        }
-
         public async Task<IActionResult> Users()
         {
             User user = await GetUser();
@@ -198,9 +193,18 @@ namespace Animerch.Controllers
             return View();
         }  
 
-        private bool TransactionExists(int id)
+        public async Task<IActionResult> Friends()
         {
-            return context.Transaction.Any(e => e.ID == id);
+            if (User == null)
+            {
+                return NotFound();
+            }
+            User user = await GetUser();
+            user.Friends = await GetFriends(user.Id);
+            var friendEntries = await context.FriendEntry.Where(FE => FE.UserID == user.Id && FE.FriendID == user.Id).ToListAsync();
+            ViewData.Add("UserFriendListEntries", friendEntries);
+
+            return View();
         }
 
         [HttpPost]
@@ -225,7 +229,14 @@ namespace Animerch.Controllers
             return RedirectToAction(nameof(Friends));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> User
+        [HttpPost, ActionName("UserAcceptFriend")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UserAcceptFriend(string userId, string friendId)
+        {
+            var friendEntryToUpdate = await context.FriendEntry.FirstAsync(FE => FE.UserID == userId && FE.FriendID == friendId);
+            context.FriendEntry.Update(friendEntryToUpdate);
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Friends));
+        }
     }
 }

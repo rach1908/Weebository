@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20190425084406_FriendEntryUpdate.Designer.cs" />
     <Compile Remove="Migrations\20190425084628_FriendEntry.cs" />
     <Compile Remove="Migrations\20190425084628_FriendEntry.Designer.cs" />
+    <Compile Remove="Migrations\20190426090921_UserFriendlistVer2.cs" />
+    <Compile Remove="Migrations\20190426090921_UserFriendlistVer2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

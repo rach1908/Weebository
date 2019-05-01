@@ -22,7 +22,7 @@ namespace Animerch.Data
             builder.Entity<User>().ToTable("User");
             builder.Entity<User>().HasMany(u => u.Friends);
             builder.Entity<Transaction>().Property(t => t.Amount).HasDefaultValue(1);
-            builder.Entity<FriendEntry>().HasKey(k => new { k.UserID, k.FriendID });       
+            builder.Entity<FriendEntry>().HasKey(k => new { k.UserID, k.FriendID });  
         }
 
         public DbSet<Transaction> Transaction { get; set; }
