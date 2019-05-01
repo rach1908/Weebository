@@ -14,17 +14,27 @@ namespace Animerch.Controllers
 {    
     public class UserpageController : Controller
     {
-        private SignInManager<User> signInManager;
+        private readonly SignInManager<User> signInManager;
 
-        private UserManager<User> userManager;
+        private readonly UserManager<User> userManager;
 
         private readonly ApplicationDbContext context;
 
         public UserpageController(ApplicationDbContext context, SignInManager<User> signInManager, UserManager<User> userManager)
         {
-            this.signInManager = signInManager;
-            this.userManager = userManager;
             this.context = context;
+            this.signInManager = signInManager;
+            this.userManager = userManager;            
+        }
+
+        private async Task<User> GetUser()
+        {         
+            return await userManager.GetUserAsync(User);
+        }
+
+        private async Task<List<User>> GetFriends(string userId)
+        {
+            return await context.FriendEntry.Where(FE => FE.UserID == userId).Include(U => U.Friend).Select(U => U.Friend).ToListAsync();
         }
 
         public IActionResult Index()
@@ -170,35 +180,23 @@ namespace Animerch.Controllers
             {
                 return NotFound();
             }
-            User user = await userManager.GetUserAsync(User);
-            var friends = new List<User>();
+            User user = await GetUser();
+            user.Friends = await GetFriends(user.Id);
             var friendEntries = await context.FriendEntry.Where(FE => FE.UserID == user.Id).ToListAsync();
             ViewData.Add("UserFriendListEntries", friendEntries);
-                
-            //context.User.Where(U => U.Id context.FriendEntry.);
-
-            foreach (var friendEntry in friendEntries)
-            {
-                friends.Add(await context.User.FirstAsync(U => U.Id == friendEntry.FriendID));
-            }
-            user.Friends = friends;
 
             return View();
         }
 
         public async Task<IActionResult> Users()
         {
+            User user = await GetUser();
+            user.Friends = await GetFriends(user.Id);
             var users = await context.User.ToListAsync();
-            
             ViewData.Add("Users", users);
 
             return View();
-        }
-
-        public IActionResult OtherUser(string userName)
-        {
-            return View();
-        }
+        }  
 
         private bool TransactionExists(int id)
         {
@@ -206,7 +204,7 @@ namespace Animerch.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UsersAddFriend([Bind("UserID,FriendID")]FriendEntry friendEntry)
+        public async Task<IActionResult> UserAddFriend([Bind("UserID,FriendID")]FriendEntry friendEntry)
         {
             if (ModelState.IsValid)
             {
@@ -216,5 +214,18 @@ namespace Animerch.Controllers
             }
             return RedirectToAction(nameof(Users));
         }
+
+        [HttpPost, ActionName("UserDeleteFriend")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UserDeleteFriend(string friendId, string userId)
+        {
+            var FeToDelete = await context.FriendEntry.FindAsync(userId, friendId);
+            context.FriendEntry.Remove(FeToDelete);
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Friends));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> User
     }
 }

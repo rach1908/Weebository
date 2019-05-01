@@ -9,7 +9,7 @@ namespace Animerch.Models
 {
     public class FriendEntry
     {     
-        public string UserID { get; set; }
+        public string UserID { get; set; }        
         public User User { get; set; }
 
         public string FriendID { get; set; }
