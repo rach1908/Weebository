@@ -13,32 +13,44 @@
     List<FriendEntry> friendEntries = ViewData["UserFriendListEntries"] as List<FriendEntry>;
     User user = await UserManager.GetUserAsync(User);
 
-    //var pendingFriends = friendEntries.Where(FE => FE.UserID == user.Id).Select(FE => FE.Friend).ToList();
-    //var acceptedFriends = friendEntries.Where(FE => FE.RequestAccepted == true).Select(FE => FE.Friend).ToList();
-    //var incomingFriends = friendEntries.Where(FE => FE.RequestAccepted == false && FE.FriendID == user.Id).Select(FE => FE.User).ToList();
-
-    //int pendingRequests;
-    //int acceptedRequests;
-    //int incomingRequests;
-    //if (friendEntries == null)
-    //{
-    //    pendingRequests = 0;
-    //    acceptedRequests = 0;
-    //    incomingRequests = 0;
-    //}
-    //else
-    //{
-    //    pendingRequests = friendEntries.Where(f => f.RequestAccepted == false && f.FriendID != user.Id).Count();
-    //    acceptedRequests = friendEntries.Where(f => f.RequestAccepted == true).Count();
-    //    incomingRequests = friendEntries.Where(f => f.RequestAccepted == false && f.FriendID == user.Id).Count();
-    //}
+    var pendingFriends = friendEntries.Where(FE => FE.UserID == user.Id && FE.FriendID != user.Id).ToList();
+    var incomingFriends = friendEntries.Where(FE => FE.UserID != user.Id && FE.FriendID == user.Id).ToList();
+    var friends = friendEntries;
 }
 
 <h2>Friends</h2>
 
-<h4>Pending Friend Requests (@pendingRequests)</h4>
+<h4>Your friends (@friends.Count)</h4>
 
-@if (null != null)
+
+@if (friends != null)
+{
+    <table class="table">
+        <thead>
+
+        </thead>
+        <tbody>
+            @foreach (var friend in friends)
+            {
+                <tr>
+                    <td>@friend.Friend.UserName</td>
+                    <td>
+                        <form asp-action="UserDeleteFriend">
+                            <input type="submit" class="btn btn-default" value="Remove Friend" />
+                            <input asp-for="UserID" type="hidden" value="@user.Id" />
+                            <input asp-for="FriendID" type="hidden" value="@friend.FriendID" />
+                        </form>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h4>Pending Friend Requests (@pendingFriends.Count)</h4>
+
+@if (pendingFriends != null)
 {
     <table class="table">
         <thead>
@@ -48,12 +60,12 @@
             @foreach (var friend in pendingFriends)
             {
                 <tr>
-                    <td>@friend.UserName</td>
+                    <td>@friend.Friend.UserName</td>
                     <td>
                         <form asp-action="UserDeleteFriend">
                             <input type="submit" class="btn btn-default" value="Remove Friend" />
                             <input asp-for="UserID" type="hidden" value="@user.Id" />
-                            <input asp-for="FriendID" type="hidden" value="@friend.Id" />
+                            <input asp-for="FriendID" type="hidden" value="@friend.FriendID" />
                         </form>
                     </td>
                 </tr>
@@ -62,34 +74,7 @@
     </table>
 }
 
-<h4>Your friends (@acceptedRequests)</h4>
-
-@if (acceptedFriends != null)
-{
-    <table class="table">
-        <thead>
-
-        </thead>
-        <tbody>
-            @foreach (var friend in acceptedFriends)
-            {
-                <tr>
-                    <td>@friend.UserName</td>
-                    <td>
-                        <form asp-action="UserDeleteFriend">
-                            <input type="submit" class="btn btn-default" value="Remove Friend" />
-                            <input asp-for="UserID" type="hidden" value="@user.Id"/>
-                            <input asp-for="FriendID" type="hidden" value="@friend.Id" />
-                        </form>
-                    </td>
-
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-<h4>Incoming Friend Requests(@incomingRequests)</h4>
+<h4>Incoming Friend Requests(@incomingFriends.Count)</h4>
 
 @if (incomingFriends != null)
 {
@@ -101,12 +86,12 @@
             @foreach (var friend in incomingFriends)
             {
                 <tr>
-                    <td>@friend.UserName</td>
+                    <td>@friend.User.UserName</td>
                     <td>
-                        <form asp-action="UserAcceptFriend">
+                        <form asp-action="UserAddFriend">
                             <input type="submit" class="btn btn-default" value="Accept Friend Request" />
-                            <input asp-for="UserID" type="hidden" value="@friend.Id" />
-                            <input asp-for="FriendID" type="hidden" value="@user.Id" />
+                            <input asp-for="UserID" type="hidden" value="@user.Id" />
+                            <input asp-for="FriendID" type="hidden" value="@friend.UserID" />
                         </form>
                     </td>
                 </tr>

@@ -16,13 +16,16 @@
 
 <table class="table">
     <thead>
-
+        <tr>
+            <th>Username</th>
+            <th>Friend Status</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var user in Users)
         {
         <tr>
-            <td><h3 class="h3">@user.UserName</h3></td>
+            <td>@user.UserName</td>
             <td hidden="hidden"><input class="form-control" value="@user.Id" /></td>
             <td>
                 <form asp-controller="Userpage" asp-action="UserAddFriend">
@@ -35,7 +38,7 @@
                         <input asp-for="FriendID" type="hidden" class="form-control" value="@user.Id"/>
                         <span asp-validation-for="FriendID" class="text-danger"></span>
                     </div>
-                    @if (signInManager.IsSignedIn(User) && loggedInUser != user && !loggedInUser.Friends.Contains(user))
+                    @if (signInManager.IsSignedIn(User) && loggedInUser != user)
                     {
                         <div class="form-group">
                             <input type="submit" value="Add to friends" class="btn btn-default" />

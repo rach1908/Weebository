@@ -37,13 +37,15 @@ namespace Animerch.Controllers
             return await userManager.GetUserAsync(User);
         }
 
-        private async Task<List<User>> GetFriends(string userId)
+        private async Task<List<FriendEntry>> GetFriendData(string userId)
         {
-            var friends = new List<User>();
+            var friendEntries = 
+                    await context.FriendEntry
+                    .Where(FE => FE.UserID == userId || FE.FriendID == userId)
+                    .Include(FE => FE.Friend)
+                    .ToListAsync();
 
-            friends.AddRange(await context.FriendEntry.Where(FE => FE.FriendID == userId).Include(U => U.User).Select(U => U.User).ToListAsync());
-
-            return friends;
+            return friendEntries;
         }
 
         public IActionResult Index()
@@ -186,7 +188,6 @@ namespace Animerch.Controllers
         public async Task<IActionResult> Users()
         {
             User user = await GetUser();
-            user.Friends = await GetFriends(user.Id);
             var users = await context.User.ToListAsync();
             ViewData.Add("Users", users);
 
@@ -200,14 +201,15 @@ namespace Animerch.Controllers
                 return NotFound();
             }
             User user = await GetUser();
-            user.Friends = await GetFriends(user.Id);
-            var friendEntries = await context.FriendEntry.Where(FE => FE.UserID == user.Id && FE.FriendID == user.Id).ToListAsync();
+
+            var friendEntries = await GetFriendData(user.Id);
             ViewData.Add("UserFriendListEntries", friendEntries);
 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserAddFriend([Bind("UserID,FriendID")]FriendEntry friendEntry)
         {
             if (ModelState.IsValid)
@@ -225,16 +227,6 @@ namespace Animerch.Controllers
         {
             var FeToDelete = await context.FriendEntry.FindAsync(userId, friendId);
             context.FriendEntry.Remove(FeToDelete);
-            await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Friends));
-        }
-
-        [HttpPost, ActionName("UserAcceptFriend")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UserAcceptFriend(string userId, string friendId)
-        {
-            var friendEntryToUpdate = await context.FriendEntry.FirstAsync(FE => FE.UserID == userId && FE.FriendID == friendId);
-            context.FriendEntry.Update(friendEntryToUpdate);
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Friends));
         }

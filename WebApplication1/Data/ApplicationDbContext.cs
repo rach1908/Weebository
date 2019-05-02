@@ -20,9 +20,10 @@ namespace Animerch.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("User");
-            builder.Entity<User>().HasMany(u => u.Friends);
             builder.Entity<Transaction>().Property(t => t.Amount).HasDefaultValue(1);
-            builder.Entity<FriendEntry>().HasKey(k => new { k.UserID, k.FriendID });  
+            builder.Entity<FriendEntry>().HasKey(k => new { k.UserID, k.FriendID });
+            builder.Entity<FriendEntry>().HasOne(P => P.User).WithMany(P => P.Friends).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<FriendEntry>().Property(FE => FE.RequestAccepted).HasDefaultValue(false);
         }
 
         public DbSet<Transaction> Transaction { get; set; }
