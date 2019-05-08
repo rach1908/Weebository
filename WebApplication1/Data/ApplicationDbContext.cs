@@ -26,7 +26,7 @@ namespace Animerch.Data
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("User");
             builder.Entity<Transaction>().Property(t => t.Amount).HasDefaultValue(1);
-            builder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "Admin".ToUpper() });
+            //builder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "Admin".ToUpper() });
         }
 
         public DbSet<Transaction> Transaction { get; set; }
