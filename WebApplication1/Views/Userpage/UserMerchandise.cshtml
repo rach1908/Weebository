@@ -13,7 +13,7 @@
 {
     <h2>My Merchandise</h2>
 
-    
+
     <p>
         <a asp-controller="Merchandise" asp-action="Index">Add new merchandise</a>
     </p>
@@ -47,36 +47,44 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Merchandise.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Merchandise.Series)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Merchandise.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Merchandise.Manufacturer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Merchandise.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Merchandise.Series)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Merchandise.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Merchandise.Manufacturer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
 
-            </tr>
+                </tr>
             }
         </tbody>
     </table>
+    
+        decimal total = 0;
+        foreach (var item in Model)
+        {
+            total += item.Price * item.Amount;
+        }
+    
+    <h3>Total weebage: @total kr.</h3>
 }
 else
-{ 
+{
     <h2>You must be logged in to see this page</h2>
 }
