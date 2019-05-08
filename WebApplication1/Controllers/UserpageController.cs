@@ -42,7 +42,7 @@ namespace Animerch.Controllers
             var friendEntries = 
                     await context.FriendEntry
                     .Where(FE => FE.UserID == userId || FE.FriendID == userId)
-                    .Include(FE => FE.Friend)
+                    .Include(FE => FE.Friend).Include(FE => FE.User)
                     .ToListAsync();
 
             return friendEntries;
@@ -187,10 +187,8 @@ namespace Animerch.Controllers
 
         public async Task<IActionResult> Users()
         {
-            User user = await GetUser();
             var users = await context.User.ToListAsync();
             ViewData.Add("Users", users);
-
             return View();
         }  
 
@@ -210,15 +208,22 @@ namespace Animerch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UserAddFriend([Bind("UserID,FriendID")]FriendEntry friendEntry)
+        public async Task<IActionResult> UserAddFriend([Bind("UserID,FriendID,RequestAccepted")]FriendEntry friendEntry)
         {
+            FriendEntry friendUpdate = await context.FriendEntry.SingleOrDefaultAsync(FE => FE.UserID == friendEntry.FriendID && FE.FriendID == friendEntry.UserID);
+
             if (ModelState.IsValid)
             {
                 context.FriendEntry.Add(friendEntry);
                 await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Users));
+                if (friendUpdate != null)
+                {
+                    friendUpdate.RequestAccepted = true;
+                    context.FriendEntry.Update(friendUpdate);
+                }
+                return RedirectToAction(nameof(Friends));
             }
-            return RedirectToAction(nameof(Users));
+            return RedirectToAction(nameof(Friends));
         }
 
         [HttpPost, ActionName("UserDeleteFriend")]
@@ -226,6 +231,12 @@ namespace Animerch.Controllers
         public async Task<IActionResult> UserDeleteFriend(string friendId, string userId)
         {
             var FeToDelete = await context.FriendEntry.FindAsync(userId, friendId);
+            var FeToDelete2 = await context.FriendEntry.FindAsync(friendId, userId);
+
+            if (FeToDelete2 != null)
+            {
+                context.FriendEntry.Remove(FeToDelete2);
+            }
             context.FriendEntry.Remove(FeToDelete);
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Friends));

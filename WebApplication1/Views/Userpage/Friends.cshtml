@@ -13,9 +13,9 @@
     List<FriendEntry> friendEntries = ViewData["UserFriendListEntries"] as List<FriendEntry>;
     User user = await UserManager.GetUserAsync(User);
 
-    var pendingFriends = friendEntries.Where(FE => FE.UserID == user.Id && FE.FriendID != user.Id).ToList();
-    var incomingFriends = friendEntries.Where(FE => FE.UserID != user.Id && FE.FriendID == user.Id).ToList();
-    var friends = friendEntries;
+    var friends = friendEntries.Where(FE => FE.RequestAccepted == true).ToList();
+    var pendingFriends = friendEntries.Where(FE => FE.UserID == user.Id && FE.RequestAccepted == false).ToList();
+    var incomingFriends = friendEntries.Where(FE => FE.FriendID == user.Id && FE.RequestAccepted == false).ToList();
 }
 
 <h2>Friends</h2>
@@ -27,7 +27,6 @@
 {
     <table class="table">
         <thead>
-
         </thead>
         <tbody>
             @foreach (var friend in friends)
@@ -74,7 +73,7 @@
     </table>
 }
 
-<h4>Incoming Friend Requests(@incomingFriends.Count)</h4>
+<h4>Incoming Friend Requests (@incomingFriends.Count)</h4>
 
 @if (incomingFriends != null)
 {
@@ -92,6 +91,7 @@
                             <input type="submit" class="btn btn-default" value="Accept Friend Request" />
                             <input asp-for="UserID" type="hidden" value="@user.Id" />
                             <input asp-for="FriendID" type="hidden" value="@friend.UserID" />
+                            <input asp-for="RequestAccepted" type="hidden" value="true"/>
                         </form>
                     </td>
                 </tr>

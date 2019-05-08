@@ -9,7 +9,7 @@
 
 @{
     ViewData["Title"] = "User List";
-    List<User> Users = ViewData["Users"] as List<User>;
+    List<User> Users = ViewData["Users"] as List<User>;    
     User loggedInUser = await userManager.GetUserAsync(User);
 }
 <h2>List of Users</h2>
@@ -18,7 +18,10 @@
     <thead>
         <tr>
             <th>Username</th>
-            <th>Friend Status</th>
+            @if (signInManager.IsSignedIn(User))
+            {
+                <th>Friend Status</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -27,25 +30,29 @@
         <tr>
             <td>@user.UserName</td>
             <td hidden="hidden"><input class="form-control" value="@user.Id" /></td>
-            <td>
-                <form asp-controller="Userpage" asp-action="UserAddFriend">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">                        
-                        <input asp-for="UserID" type="hidden" class="form-control" value="@loggedInUser.Id"/>
-                        <span asp-validation-for="UserID" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input asp-for="FriendID" type="hidden" class="form-control" value="@user.Id"/>
-                        <span asp-validation-for="FriendID" class="text-danger"></span>
-                    </div>
-                    @if (signInManager.IsSignedIn(User) && loggedInUser != user)
-                    {
-                        <div class="form-group">
-                            <input type="submit" value="Add to friends" class="btn btn-default" />
+            <td><a class="btn-link">View Profile</a></td>
+            @if (signInManager.IsSignedIn(User))
+            {
+                <td>
+                    <form asp-controller="Userpage" asp-action="UserAddFriend">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">                        
+                            <input asp-for="UserID" type="hidden" class="form-control" value="@loggedInUser.Id"/>
+                            <span asp-validation-for="UserID" class="text-danger"></span>
                         </div>
-                    }
-                </form>
-            </td>
+                        <div class="form-group">
+                            <input asp-for="FriendID" type="hidden" class="form-control" value="@user.Id"/>
+                            <span asp-validation-for="FriendID" class="text-danger"></span>
+                        </div>
+                        @if (loggedInUser != user && true)
+                        {
+                            <div class="form-group">
+                                <input type="submit" value="Add to friends" class="btn btn-default" />
+                            </div>
+                        }
+                    </form>
+                </td>
+            }
         </tr>
         }
     </tbody>

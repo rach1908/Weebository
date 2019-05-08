@@ -22,8 +22,9 @@ namespace Animerch.Data
             builder.Entity<User>().ToTable("User");
             builder.Entity<Transaction>().Property(t => t.Amount).HasDefaultValue(1);
             builder.Entity<FriendEntry>().HasKey(k => new { k.UserID, k.FriendID });
-            builder.Entity<FriendEntry>().HasOne(P => P.User).WithMany(P => P.Friends).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<FriendEntry>().HasOne(P => P.User).WithMany(P => P.Friends).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<FriendEntry>().Property(FE => FE.RequestAccepted).HasDefaultValue(false);
+            builder.Entity<FriendEntry>().Property(FE => FE.RequestSent).HasDefaultValue(true);
         }
 
         public DbSet<Transaction> Transaction { get; set; }
