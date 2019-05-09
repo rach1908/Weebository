@@ -38,25 +38,24 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Series)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer)
+            </td>
+            @if (SignInManager.IsSignedIn(User))
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <a asp-controller="Userpage" asp-action="Create" asp-route-id="@item.ID">Add to your merchandise</a>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Series)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Manufacturer)
-                </td>
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <td>
-                        <a asp-controller="Userpage" asp-action="Create" asp-route-id="@item.ID">Add to your merchandise</a>
-                    </td>
-                }
                 @if (User.IsInRole("Admin"))
                 {
                     <td>
@@ -66,7 +65,9 @@
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
                 }
-            </tr>
+            }
+
+        </tr>
         }
     </tbody>
 </table>

@@ -90,7 +90,7 @@ namespace Animerch.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Type,Series,Manufacturer")] Merchandise merchandise)
+        public async Task<IActionResult> Edit(int id, [Bind("ID, Name,Type,Series,Manufacturer")] Merchandise merchandise)
         {
             if (id != merchandise.ID)
             {
@@ -117,7 +117,7 @@ namespace Animerch.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(merchandise);
+            return RedirectToAction("Edit/" + id);
         }
 
         // GET: Merchandise/Delete/5
