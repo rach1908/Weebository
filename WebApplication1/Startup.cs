@@ -74,11 +74,11 @@ namespace Animerch
             {
                 //Cookie Settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                options.LoginPath = "/Account/Login";
-                options.LogoutPath = "/Account/Logout";
-                options.AccessDeniedPath = "/Account/AccessDenied";
-                options.SlidingExpiration = true;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                //options.LoginPath = "/Account/Login";
+                //options.LogoutPath = "/Account/Logout";
+                //options.AccessDeniedPath = "/Account/AccessDenied";
+                //options.SlidingExpiration = true;
             });
 
             //Add Application Services

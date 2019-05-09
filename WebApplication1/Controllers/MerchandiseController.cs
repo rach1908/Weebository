@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Animerch.Controllers
 {
@@ -31,7 +32,6 @@ namespace Animerch.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> MerchandiseAddEntry([Bind("Price,Amount,ID,User,Merchandise")]Transaction transaction)
         {            
@@ -43,5 +43,118 @@ namespace Animerch.Controllers
             }
             return View(transaction);
         }
+
+        // GET: Merchandise/Create
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Merchandise/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Name,Type,Series,Manufacturer")] Merchandise merchandise)
+        {
+            if (ModelState.IsValid)
+            {
+                context.Add(merchandise);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(merchandise);
+        }
+
+        // GET: Merchandise/Edit/5
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merchandise = await context.Merchandise.FindAsync(id);
+            if (merchandise == null)
+            {
+                return NotFound();
+            }
+            return View(merchandise);
+        }
+
+        // POST: Merchandise/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Type,Series,Manufacturer")] Merchandise merchandise)
+        {
+            if (id != merchandise.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    context.Update(merchandise);
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MerchandiseExists(merchandise.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(merchandise);
+        }
+
+        // GET: Merchandise/Delete/5
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merchandise = await context.Merchandise
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (merchandise == null)
+            {
+                return NotFound();
+            }
+
+            return View(merchandise);
+        }
+
+        // POST: Merchandise/Delete/5
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var merchandise = await context.Merchandise.FindAsync(id);
+            context.Merchandise.Remove(merchandise);
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool MerchandiseExists(int id)
+        {
+            return context.Merchandise.Any(e => e.ID == id);
+        }
     }
 }
+
