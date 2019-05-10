@@ -9,9 +9,16 @@
 
 @{
     ViewData["Title"] = "User List";
-    List<User> Users = ViewData["Users"] as List<User>;    
+    List<User> Users = ViewData["Users"] as List<User>;
     User loggedInUser = await userManager.GetUserAsync(User);
+    List<FriendEntry> userFriendData = ViewData["UserFriends"] as List<FriendEntry>;
+    List<User> userFriends = new List<User>();
+    if (userFriendData != null)
+    {
+        userFriendData.ForEach(FE => userFriends.Add(FE.Friend));
+    }
 }
+
 <h2>List of Users</h2>
 
 <table class="table">
@@ -30,29 +37,41 @@
         <tr>
             <td>@user.UserName</td>
             <td hidden="hidden"><input class="form-control" value="@user.Id" /></td>
-            <td><a class="btn-link">View Profile</a></td>
             @if (signInManager.IsSignedIn(User))
             {
                 <td>
                     <form asp-controller="Userpage" asp-action="UserAddFriend">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">                        
-                            <input asp-for="UserID" type="hidden" class="form-control" value="@loggedInUser.Id"/>
+                        <div>
+                            <input asp-for="UserID" type="hidden" class="form-control" value="@loggedInUser.Id" />
                             <span asp-validation-for="UserID" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <input asp-for="FriendID" type="hidden" class="form-control" value="@user.Id"/>
+                        <div>
+                            <input asp-for="FriendID" type="hidden" class="form-control" value="@user.Id" />
                             <span asp-validation-for="FriendID" class="text-danger"></span>
                         </div>
-                        @if (loggedInUser != user && true)
+                        <div>
+                            <input type="hidden" value="@ViewContext.ExecutingFilePath"/>
+                        </div>
+                        @if (loggedInUser != user)
                         {
-                            <div class="form-group">
-                                <input type="submit" value="Add to friends" class="btn btn-default" />
-                            </div>
+                            if (userFriends.Contains(user))
+                            {
+                                <label class="label label-info">On your friendlist</label>
+                            }
+                            else
+                            {
+                                <input type="submit" value="Add to friends" class="btn-link" />
+                            }
+                        }
+                        else if (user == loggedInUser)
+                        {
+                            <label class="label label-success">This Is You</label>
                         }
                     </form>
                 </td>
             }
+            <td><a class="btn-link">View Profile</a></td>
         </tr>
         }
     </tbody>

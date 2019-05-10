@@ -23,6 +23,8 @@
     <Compile Remove="Migrations\20190426090921_UserFriendlistVer2.Designer.cs" />
     <Compile Remove="Migrations\20190502094218_NewFriendModel.cs" />
     <Compile Remove="Migrations\20190502094218_NewFriendModel.Designer.cs" />
+    <Compile Remove="Migrations\20190508094721_FriendEntryModelUpdate.cs" />
+    <Compile Remove="Migrations\20190508094721_FriendEntryModelUpdate.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

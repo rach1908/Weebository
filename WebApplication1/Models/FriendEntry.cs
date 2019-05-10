@@ -18,7 +18,6 @@ namespace Animerch.Models
         public string FriendID { get; set; }        
         public User Friend { get; set; }
 
-        public bool RequestSent { get; set; }
         public bool RequestAccepted { get; set; }
     }
 }

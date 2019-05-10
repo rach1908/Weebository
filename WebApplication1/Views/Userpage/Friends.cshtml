@@ -2,32 +2,30 @@
 @using Animerch.Models;
 @using Microsoft.AspNetCore.Identity;
 
-@model FriendEntry;
+@model FriendEntry
 
 @inject UserManager<User> UserManager
 @inject SignInManager<User> SignInManager
-
 
 @{
     ViewData["Title"] = "Friends";
     List<FriendEntry> friendEntries = ViewData["UserFriendListEntries"] as List<FriendEntry>;
     User user = await UserManager.GetUserAsync(User);
 
-    var friends = friendEntries.Where(FE => FE.RequestAccepted == true).ToList();
+    var friends = friendEntries.Where(FE => FE.RequestAccepted == true && FE.UserID == user.Id).ToList();
     var pendingFriends = friendEntries.Where(FE => FE.UserID == user.Id && FE.RequestAccepted == false).ToList();
     var incomingFriends = friendEntries.Where(FE => FE.FriendID == user.Id && FE.RequestAccepted == false).ToList();
+    var route = ViewContext.ExecutingFilePath;
 }
 
 <h2>Friends</h2>
 
-<h4>Your friends (@friends.Count)</h4>
-
-
-@if (friends != null)
-{
     <table class="table">
         <thead>
+            Your friends (@friends.Count)
         </thead>
+@if (friends != null)
+{
         <tbody>
             @foreach (var friend in friends)
             {
@@ -35,7 +33,7 @@
                     <td>@friend.Friend.UserName</td>
                     <td>
                         <form asp-action="UserDeleteFriend">
-                            <input type="submit" class="btn btn-default" value="Remove Friend" />
+                            <input class="btn-link" type="submit" value="Remove Friend" />
                             <input asp-for="UserID" type="hidden" value="@user.Id" />
                             <input asp-for="FriendID" type="hidden" value="@friend.FriendID" />
                         </form>
@@ -44,17 +42,15 @@
                 </tr>
             }
         </tbody>
-    </table>
 }
+    </table>
 
-<h4>Pending Friend Requests (@pendingFriends.Count)</h4>
-
-@if (pendingFriends != null)
-{
     <table class="table">
         <thead>
-
+            Pending Friend Requests (@pendingFriends.Count)
         </thead>
+@if (pendingFriends != null)
+{
         <tbody>
             @foreach (var friend in pendingFriends)
             {
@@ -62,7 +58,7 @@
                     <td>@friend.Friend.UserName</td>
                     <td>
                         <form asp-action="UserDeleteFriend">
-                            <input type="submit" class="btn btn-default" value="Remove Friend" />
+                            <input class="btn-link" type="submit" value="Cancel Friend Request" />
                             <input asp-for="UserID" type="hidden" value="@user.Id" />
                             <input asp-for="FriendID" type="hidden" value="@friend.FriendID" />
                         </form>
@@ -70,17 +66,15 @@
                 </tr>
             }
         </tbody>
-    </table>
 }
+    </table>
 
-<h4>Incoming Friend Requests (@incomingFriends.Count)</h4>
-
-@if (incomingFriends != null)
-{
     <table class="table">
         <thead>
-
+            Incoming Friend Requests (@incomingFriends.Count)
         </thead>
+@if (incomingFriends != null)
+{
         <tbody>
             @foreach (var friend in incomingFriends)
             {
@@ -88,17 +82,24 @@
                     <td>@friend.User.UserName</td>
                     <td>
                         <form asp-action="UserAddFriend">
-                            <input type="submit" class="btn btn-default" value="Accept Friend Request" />
+                            <input class="btn-link" type="submit" value="Accept Friend Request" />
                             <input asp-for="UserID" type="hidden" value="@user.Id" />
                             <input asp-for="FriendID" type="hidden" value="@friend.UserID" />
                             <input asp-for="RequestAccepted" type="hidden" value="true"/>
                         </form>
                     </td>
+                    <td>
+                        <form asp-action="UserDeleteFriend">
+                            <input class="btn-link" type="submit" value="Decline Friend Request" />
+                            <input asp-for="UserID" type="hidden" value="@friend.UserID" />
+                            <input asp-for="FriendID" type="hidden" value="@user.Id" />
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
-    </table>
 }
+    </table>
 
 
 
